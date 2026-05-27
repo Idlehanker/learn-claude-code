@@ -2,8 +2,8 @@
     "lsp": {
         "pyright": {
             "settings": {
-                "python.venvPath": ".venv",
-                "python.pythonPath": ".venv/bin/python"
+                "python.venvPath": ".",
+                "python.venv": ".venv"
             }
         }
     },
