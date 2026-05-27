@@ -1,0 +1,63 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Learn Claude Code — Repo Tour",
+  "description": "Orientation walkthrough for anyone new to this repository. Covers the project philosophy, session structure, reference agents, skills, tests, and web app.",
+  "ref": "main",
+  "steps": [
+    {
+      "directory": ".",
+      "title": "Project Root",
+      "description": "20 session directories (s01–s20), each teaching one harness mechanism in a single Python file. Also: agents/ (standalone reference scripts), skills/ (loadable manifests), docs/ (multi-language teaching material), web/ (Next.js curriculum site), and tests/."
+    },
+    {
+      "file": "README.md",
+      "line": 5,
+      "title": "Read This First — The Philosophy",
+      "description": "Situation: The opening claim — an agent product = model + harness.\nMechanism: The README traces agency from DeepMind DQN (2013) through OpenAI Five, AlphaStar, to modern LLM agents, making the case that agency is trained, not coded.\nImplication: This repo teaches harness engineering, not prompt plumbing. Every session builds infrastructure that lets the model act — not workflows that try to script its decisions.\nGotcha: If you see patterns like drag-and-drop node graphs or if-else chain-of-thought routing, that's the 'Rube Goldberg' anti-pattern the README calls out."
+    },
+    {
+      "file": "CLAUDE.md",
+      "line": 1,
+      "title": "Navigation Guide — CLAUDE.md",
+      "description": "Situation: The file Claude Code reads on entering this repo.\nMechanism: Commands (tests, run agents), session table (s01–s20 with mechanism and pattern), directory map, Git conventions, and web data model.\nImplication: This is the single source of truth for how to work in this repo. Before editing any session or agent, check here for the conventions."
+    },
+    {
+      "directory": "s01_agent_loop",
+      "title": "Session 01 — The Minimal Harness",
+      "description": "Situation: The simplest teaching session — one tool (bash) + one loop.\nMechanism: ~150 lines total. The docstring diagrams the loop. The code defines a single bash tool, executes it via subprocess, and feeds results back until stop_reason != 'tool_use'.\nImplication: Every subsequent session adds exactly one mechanism on top of this core pattern. Understand s01 and you understand the foundation of all 20 sessions."
+    },
+    {
+      "file": "s01_agent_loop/code.py",
+      "line": 93,
+      "title": "The Core Loop — agent_loop()",
+      "description": "Situation: The while loop that powers every agent in this repo.\nMechanism: Lines 93–127 — send messages+tools to LLM, append assistant turn, check stop_reason, execute tool_use blocks via run_bash(), collect results as tool_result blocks, append them as user messages, repeat.\nImplication: This is the entire secret. The loop is the harness. The model supplies the intelligence. Production versions (s20, s_full) layer hooks, permissions, memory, compaction, teams on top — but the core never changes."
+    },
+    {
+      "directory": "agents",
+      "title": "Reference Agents — agents/",
+      "description": "Situation: Standalone, self-contained agent scripts that parallel the session implementations (s01_agent_loop.py through s12_worktree_task_isolation.py) plus s_full.py.\nMechanism: Each is runnable via `python agents/sXX_*.py` and readable end-to-end. They are not libraries — they are reference implementations meant to be read, copied, and adapted.\nImplication: If you want a clean copy of a session's mechanism without session-specific scaffolding, read the agents/ counterpart."
+    },
+    {
+      "file": "agents/__init__.py",
+      "line": 1,
+      "title": "Quick Reference — Agent Listing",
+      "description": "Situation: A 3-line docstring that summarizes the entire agents/ directory.\nMechanism: Lists the range (s01–s12 + s_full), states each file is self-contained and runnable, and restates the philosophy: 'These files are the harness.'\nGotcha: s13–s19 have no agents/ counterparts. The sessions and agents converge at s20_comprehensive/code.py for the full integrated reference."
+    },
+    {
+      "file": "skills/agent-builder/SKILL.md",
+      "line": 1,
+      "title": "Skill Manifests — On-Demand Knowledge",
+      "description": "Situation: Each skills/ subdirectory has a SKILL.md with YAML frontmatter (name, description, keywords) that an agent can load on demand.\nMechanism: Session s07 teaches the skill-loading mechanism. The frontmatter is parsed by parse_frontmatter() — see s07_skill_loading/code.py or s20_comprehensive/code.py lines 289–301.\nImplication: Skills are not auto-injected. They are loaded only when the model decides they are relevant, keeping context clean."
+    },
+    {
+      "file": "tests/test_agents_smoke.py",
+      "line": 17,
+      "title": "Smoke Tests — Compile Verification",
+      "description": "Situation: A parametrized pytest that runs py_compile on every agent script.\nMechanism: Line 18 — `py_compile.compile(str(agent_path), doraise=True)`. It globs all *.py in agents/ (excluding __init__.py) and verifies each parses without syntax errors.\nImplication: No import mocking, no API calls, no logic testing — just syntax validation. Logical tests live in test_s_full_background.py, which uses module mocking for the anthropic/dotenv imports."
+    },
+    {
+      "title": "Next Steps",
+      "description": "You now know the repo shape. To dive deeper:\n- Read a session end-to-end: start with s01_agent_loop/code.py, then s07_skill_loading/code.py for skills\n- Run an agent: `python agents/s01_agent_loop.py` (needs .env)\n- Run the tests: `python -m pytest tests/ -q`\n- Browse the web curriculum: `cd web && npm run dev`\n- The CLAUDE.md has the full session table and command reference."
+    }
+  ]
+}
