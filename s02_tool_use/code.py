@@ -26,6 +26,7 @@ except ImportError:
     pass
 
 from anthropic import Anthropic
+from anthropic.types import ToolParam
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
@@ -118,7 +119,7 @@ def run_glob(pattern: str) -> str:
 #  NEW in s02: 工具定义（s01 只有一个 bash，现在扩展到 5 个）
 # ═══════════════════════════════════════════════════════════
 
-TOOLS = [
+TOOLS: list[ToolParam] = [
     {"name": "bash", "description": "Run a shell command.",
      "input_schema": {"type": "object", "properties": {"command": {"type": "string"}}, "required": ["command"]}},
     {"name": "read_file", "description": "Read file contents.",
